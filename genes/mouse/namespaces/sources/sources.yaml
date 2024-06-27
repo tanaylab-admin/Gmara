@@ -1,0 +1,9 @@
+# MGI (Mouse Genome Informatics): https://www.informatics.jax.org/
+# Downloaded URL: https://www.informatics.jax.org/downloads/reports/MRK_Sequence.rpt
+- data_file: MGI.tsv
+  columns:
+    Marker Symbol: { namespace: MGI }
+    Ensembl transcript IDs: { namespace: EnsemblT }
+    Ensembl protein IDs: { namespace: EnsemblP }
+    RefSeq transcript IDs: { namespace: RefSeqT }
+    RefSeq protein IDs: { namespace: RefSeqP }
