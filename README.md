@@ -1,6 +1,4 @@
-![logo](Gmara.jpg)
-
-# Gmara
+# Gmara <img src="Gmara.jpg" align="right" height="280" alt="" />
 Genes Manifests Archive for RNA Analysis
 
 ## Motivation
