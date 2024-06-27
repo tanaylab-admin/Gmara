@@ -10170,7 +10170,6 @@ CCC9	False
 CCCAP	False
 CCCP-1	False
 CCD	False
-CCD#	True
 CCD1	False
 CCD41	False
 CCDC10	True
@@ -20328,7 +20327,7 @@ ECT2	True
 ECT2L	True
 ECTACC	False
 ECop	False
-ED#	True
+ED	True
 ED1	False
 ED1-A1	False
 ED1-A2	False
@@ -26467,7 +26466,6 @@ FLJ23658	False
 FLJ23666	False
 FLJ23703	False
 FLJ23707	False
-FLJ23713	False
 FLJ23743	False
 FLJ23749	False
 FLJ23751	False
@@ -28278,7 +28276,7 @@ FOSL1	True
 FOSL1P1	True
 FOSL2	True
 FOSL2-AS1	True
-FOX#	True
+FOX	True
 FOX-1	False
 FOX-2	False
 FOX-3	False
@@ -30188,7 +30186,7 @@ GLB1L	True
 GLB1L2	True
 GLB1L3	True
 GLBA	True
-GLC#	True
+GLC	True
 GLC1A	False
 GLC1B	True
 GLC1C	True
@@ -56526,7 +56524,7 @@ Ms4a10	False
 Msl1	False
 Msp	False
 Msp1	False
-Mt-GrpE#2	False
+Mt-GrpE	False
 MtCCA	False
 MtF	False
 Mte1	False
@@ -60072,7 +60070,6 @@ OEBT	False
 OED	True
 OF	False
 OFC	False
-OFC#	True
 OFC1	True
 OFC10	False
 OFC2	True
@@ -78917,7 +78914,7 @@ SCA9	True
 SCAANT1	True
 SCAD	False
 SCAD-SRL	False
-SCAF#	True
+SCAF	True
 SCAF1	False
 SCAF10	False
 SCAF11	True
@@ -79021,7 +79018,6 @@ SCAT2	True
 SCAT3	False
 SCAT4	False
 SCAT5	False
-SCAT6	False
 SCAT7	False
 SCAT8	True
 SCAX1	False
@@ -81598,7 +81594,6 @@ SM22	False
 SM25H2	False
 SM2SH2	False
 SMA	False
-SMA#	True
 SMA1	False
 SMA2	False
 SMA3	False
@@ -101708,7 +101703,7 @@ lncND	False
 lncPARP1	False
 lncPENG	False
 lncPSCA	False
-lncRNA#32	False
+lncRNA	False
 lncRNA-508851	False
 lncRNA-AC130710	False
 lncRNA-ANCR	False

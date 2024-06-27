@@ -1,9 +1,22 @@
 # MGI (Mouse Genome Informatics): https://www.informatics.jax.org/
-# Downloaded URL: https://www.informatics.jax.org/downloads/reports/MRK_Sequence.rpt
-- data_file: MGI.tsv
+
+# You would think we could have used https://www.informatics.jax.org/downloads/reports/MRK_Sequence.rpt
+# But it associates the MGI genes with Ensembl and RefSeq transcript and protein ids, not gene ids.
+# However two files do contain association of MGI genes with Ensembl and RefSeq gene ids.
+# The set of gene names in these files is different though...
+
+# Downloaded URL: https://www.informatics.jax.org/downloads/reports/MGI_PhenotypicAllele.rpt
+- data_file: MGI.1.tsv
+  has_header: false
   columns:
-    Marker Symbol: { namespace: MGI }
-    Ensembl transcript IDs: { namespace: EnsemblT }
-    Ensembl protein IDs: { namespace: EnsemblP }
-    RefSeq transcript IDs: { namespace: RefSeqT }
-    RefSeq protein IDs: { namespace: RefSeqP }
+    7: { namespace: MGI }
+    8: { namespace: RefSeq }
+    9: { namespace: Ensembl }
+
+# Downloaded URL: https://www.informatics.jax.org/downloads/reports/MGI_QTLAllele.rpt
+- data_file: MGI.2.tsv
+  has_header: false
+  columns:
+    6: { namespace: MGI }
+    7: { namespace: RefSeq }
+    8: { namespace: Ensembl }

@@ -32,7 +32,8 @@ class Namespaces:
             dtype = str,
             keep_default_na = False,
             header="infer" if has_header else None,
-            sep = ',' if data_path.endswith(".csv") else '\t'
+            sep = ',' if data_path.endswith(".csv") else '\t',
+            comment = '#',
         )
 
         columns = []
