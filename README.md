@@ -24,6 +24,15 @@ The data is stored in the following tree:
 
 Additional sub-directories may be added in the future.
 
+## API and Versioning
+
+There's no API provided here. The idea is that you should fetch the data file(s) you need directly through the github
+URLs using `wget`, `curl` or any other method for fetching HTTP data. That said, it is possible to provide a thing API
+for fetching specific data using these URLs.
+
+Since this is a github repository, you can always refer to a specific commit of this repository in the URLs to get the
+same data. This is useful anywhere reproduciblity is important (e.g. vignettes and published results).
+
 ## Lists
 
 Each list is a sub-directory under the `lists` sub-directory, holding the following files:
