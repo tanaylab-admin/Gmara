@@ -8,3 +8,12 @@
     Alias symbols: { namespace: HGNC, is_alternative: true }
     RefSeq IDs: { namespace: RefSeq }
     Ensembl gene ID: { namespace: Ensembl }
+
+# UCSC (University of California Santa Cruise)
+# Via: https://genome.ucsc.edu/index.html
+# Downloaed URL: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/wgEncodeGencodeAttrsV46.txt.gz
+- data_file: UCSC.tsv
+  has_header: false
+  columns:
+    0: { namespace: Ensembl }
+    1: { namespace: UCSC }
