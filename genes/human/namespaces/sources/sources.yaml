@@ -3,6 +3,7 @@
 # Downloaded URL: https://www.genenames.org/cgi-bin/download/custom?col=gd_hgnc_id&col=gd_app_sym&col=gd_prev_sym&col=gd_aliases&col=gd_pub_refseq_ids&col=gd_pub_ensembl_id&status=Approved&status=Entry%20Withdrawn&hgnc_dbtag=on&order_by=gd_app_sym_sort&format=text&submit=submit
 - data_file: HGNC.tsv
   columns:
+    HGNC ID: { namespace: HGNC_ID }
     Approved symbol: { namespace: HGNC }
     Previous symbols: { namespace: HGNC, is_alternative: true }
     Alias symbols: { namespace: HGNC, is_alternative: true }
@@ -11,9 +12,74 @@
 
 # UCSC (University of California Santa Cruise)
 # Via: https://genome.ucsc.edu/index.html
-# Downloaed URL: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/wgEncodeGencodeAttrsV46.txt.gz
-- data_file: UCSC.tsv
+# Via: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/
+# Downloaded URL: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/wgEncodeGencodeAttrsV46.txt.gz
+- data_file: UCSC_Ensembl.tsv
   has_header: false
   columns:
-    0: { namespace: Ensembl }
+    0: { namespace: RefSeq }
     1: { namespace: UCSC }
+    3: { namespace: Ensembl }
+
+# UCSC (University of California Santa Cruise)
+# Via: https://genome.ucsc.edu/index.html
+# CLI: mysql --user=genome --host=genome-mysql.cse.ucsc.edu --disable-auto-rehash -e "SELECT name,alignID,mRNA,geneSymbol,refseq,protAcc FROM hg38.knownGene INNER JOIN hg38.kgXref ON knownGene.name = kgXref.kgID"
+- data_file: UCSC_RefSeq.tsv
+  columns:
+    name: { namespace: Ensembl }
+    alignID: { namespace: UCSC_ID }
+    mRNA: { namespace: RefSeq }
+    geneSymbol: { namespace: UCSC }
+    refseq: { namespace: RefSeq }
+    protAcc: { namespace: RefSeq }
+
+- data_file: Ensembl.tsv
+  columns:
+    Gene stable ID: { namespace: Ensembl }
+    Transcript stable ID: { namespace: Ensembl, is_alternative = true }
+    Protein stable ID: { namespace: Ensembl, is_alternative = true }
+
+- data_file: Ensembl_HGNC.tsv
+  columns:
+    Gene stable ID: { namespace: Ensembl }
+    Transcript stable ID: { namespace: Ensembl, is_alternative = true }
+    Protein stable ID: { namespace: Ensembl, is_alternative = true }
+    HGNC symbol: { namespace: HGNC }
+
+- data_file: Ensembl_UCSC.tsv
+  columns:
+    Gene stable ID: { namespace: Ensembl }
+    Transcript stable ID: { namespace: Ensembl, is_alternative = true }
+    Protein stable ID: { namespace: Ensembl, is_alternative = true }
+    UCSC Stable ID: { namespace: UCSC_ID }
+
+- data_file: Ensembl_RefSeq_mRNA.tsv
+  columns:
+    Gene stable ID: { namespace: Ensembl }
+    Transcript stable ID: { namespace: Ensembl, is_alternative = true }
+    Protein stable ID: { namespace: Ensembl, is_alternative = true }
+    RefSeq mRNA ID: { namespace: RefSeq }
+    RefSeq mRNA predicted ID: { namespace: RefSeq, is_alternative = true }
+
+- data_file: Ensembl_RefSeq_ncRNA.tsv
+  columns:
+    Gene stable ID: { namespace: Ensembl }
+    Transcript stable ID: { namespace: Ensembl, is_alternative = true }
+    Protein stable ID: { namespace: Ensembl, is_alternative = true }
+    RefSeq ncRNA ID: { namespace: RefSeq }
+    RefSeq ncRNA predicted ID: { namespace: RefSeq, is_alternative = true }
+
+- data_file: Ensembl_RefSeq_peptide.tsv
+  columns:
+    Gene stable ID: { namespace: Ensembl }
+    Transcript stable ID: { namespace: Ensembl, is_alternative = true }
+    Protein stable ID: { namespace: Ensembl, is_alternative = true }
+    RefSeq peptide ID: { namespace: RefSeq, is_alternative = true }
+    RefSeq peptide predicted ID: { namespace: RefSeq, is_alternative = true }
+
+# Manual addition of seen-in-the-wild retired IDs.
+# This should be raplaced with scraping these IDs from somewhere authoritative.
+- data_file: Ensembl_Manual.tsv
+  columns:
+    retired: { namespace: Ensembl, is_alternative = true }
+    active: { namespace: Ensembl }

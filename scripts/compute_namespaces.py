@@ -24,20 +24,20 @@ class Namespaces:
         self.namespaces = {}
 
     def collect_source(self, sources_spec):
-        data_path = f"{self.sources_dir}/{sources_spec['data_file']}"
-        has_header = sources_spec.get('has_header', True)
+        data_path = f"{self.sources_dir}/{sources_spec["data_file"]}"
+        has_header = sources_spec.get("has_header", True)
         assert os.path.isfile(data_path), f"not a file: {data_path}"
         frame = pd.read_csv(
             data_path,
             dtype = str,
             keep_default_na = False,
             header="infer" if has_header else None,
-            sep = ',' if data_path.endswith(".csv") else '\t',
-            comment = '#',
+            sep = "," if data_path.endswith(".csv") else "\t",
+            comment = "#",
         )
 
         columns = []
-        for column, column_spec in sources_spec['columns'].items():
+        for column, column_spec in sources_spec["columns"].items():
             namespace_name = column_spec["namespace"]
             is_alternative = column_spec.get("is_alternative", False)
             if isinstance(column, int):
@@ -48,18 +48,18 @@ class Namespaces:
 
         for first_column in range(len(columns)):
             first_namespace_name, first_is_alternative, first_gene_names = columns[first_column]
-            print(f"Collect sources/{sources_spec['data_file']} / {first_namespace_name} ...", flush = True)
+            print(f"Collect sources/{sources_spec["data_file"]} / {first_column} -> {first_namespace_name} ...", flush = True)
             for row in range(frame.shape[0]):
-                self.add_names(first_namespace_name, first_is_alternative, re.split(r"[| ,;\t]", first_gene_names[row]))
+                self.add_names(first_namespace_name, first_is_alternative, split_names(first_gene_names[row]))
             for second_column in range(first_column):
                 second_namespace_name, second_is_alternative, second_gene_names = columns[second_column]
-                print(f"Collect sources/{sources_spec['data_file']} / {first_namespace_name} / {second_namespace_name} ...", flush = True)
+                print(f"Collect sources/{sources_spec["data_file"]} / {first_column} -> {first_namespace_name} / {second_column} -> {second_namespace_name} ...", flush = True)
                 for row in range(frame.shape[0]):
                     self.link_names(
                         first_namespace_name,
-                        re.split(r"[| ,;\t]", first_gene_names[row]),
+                        split_names(first_gene_names[row]),
                         second_namespace_name,
-                        re.split(r"[| ,;\t]", second_gene_names[row]),
+                        split_names(second_gene_names[row]),
                     )
 
     def add_names(self, namespace_name, is_alternative, gene_names):
@@ -156,6 +156,17 @@ class Namespaces:
                         if not link_gene.is_alternative:
                             print(f"{gene_name1}\t{link_gene_name}", file=file)
 
+def split_names(names):
+    return [normalize_name(name) for name in re.split(r"[| ,;\t]", names)]
+
+def normalize_name(name):
+    if not name.startswith("ENS"):
+        return name
+    parts = name.split(".")
+    if len(parts) == 2:
+        return parts[0]
+    else:
+        return name
 
 def main():
     assert len(sys.argv) == 2, "Usage: compute_namespaces.py genes/organism"

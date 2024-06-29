@@ -1,0 +1,11 @@
+# University of Toronto paper by Samuel Lambert et al.
+# Via: https://humantfs.ccbr.utoronto.ca/
+# Downloaded URL: https://humantfs.ccbr.utoronto.ca/download/v_1.01/DatabaseExtract_v_1.01.csv
+# Post-processing:
+# - Manually filtered by `Is TF?` == `Yes`
+# - Changed DUX1_HUMAN and DUX3_HUMAN to empty string (no Ensembl ID).
+# - Changed `PHF19 ` to `PHF19` (removed the trailing space).
+- data_file: Toronto.csv
+  columns:
+    Ensembl ID: Ensembl
+    HGNC symbol: HGNC

@@ -1,0 +1,4 @@
+The gene: 'AC008770.3' is missing from the namespace: HGNC
+The gene: 'AC023509.3' is missing from the namespace: HGNC
+The gene: 'AC092835.1' is missing from the namespace: HGNC
+The gene: 'AC138696.1' is missing from the namespace: HGNC

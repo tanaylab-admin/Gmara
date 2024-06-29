@@ -3,13 +3,20 @@ Genes Manifests Archive for RNA Analysis
 
 ## Motivation
 
-This repository holds lists of genes for use in scRNA-seq analysis.
-They are stored in machine-readable format so they can be used by software, directly from this repository, optionally with commit tags to ensure reproducability.
+This repository holds lists of genes for use in scRNA-seq analysis. They are stored in machine-readable format so they
+can be used by software, directly from this repository, optionally with commit tags to ensure reproducability.
 
-The intent is that these lists be used as *initial* lists for analysis (e.g., provide initial list of lateral genes for metacells analysis).
-The analyst is responsible for exercising judgement and common sense when using these lists.
+In general, this repository is meant to be used as a convenient *initial starting point* for analysis, rather than serve
+as a "source of truth". It is designed to make it easy to apply lists to to arbitrary data sets regardless of the
+version of the genes names used, so the lists include retired/deprecated/renamed genes. **The analyst is responsible for
+exercising judgement and common sense when using these lists.**
 
-Contribution of new lists or list modifications is welcome!
+For the purposes of this repository, what we call a "gene" is actually "any named genome location or protein or RNA
+sequence we use in analysis". Likewise, what we call a gene "name" is "whatever we use to identify the gene". For
+example, we include utranscript and protein IDs as "gene names". We only consider the gene "identifier" or "symbol" or
+"marker" rather than the full human-readable gene name (e.g., "SOX4" rather than "SRY-box transcription factor 4").
+
+Feedback and contribution of new lists or list modifications are welcome!
 
 ## Structure
 
@@ -21,29 +28,44 @@ The data is stored in the following tree:
             * A `sources` sub-directory contains the source files we collected the gene namespaces from.
             * A `names` sub-directory contains the actual gene names.
         * A `lists` sub-directory` contains the actual gene lists.
+            * Each list is a sub-directory.
+                * A `sources` sub-directory contains the sources of the gene list.
+                * A `names` sub-directory contains the actual gene names.
 
 Additional sub-directories may be added in the future.
 
 ## API and Versioning
 
 There's no API provided here. The idea is that you should fetch the data file(s) you need directly through the github
-URLs using `wget`, `curl` or any other method for fetching HTTP data. That said, it is possible to provide a thing API
-for fetching specific data using these URLs.
+URLs using `wget`, `curl` or any other method for fetching HTTP data. That said, it is possible to provide an API for
+fetching specific data using these URLs.
 
 Since this is a github repository, you can always refer to a specific commit of this repository in the URLs to get the
 same data. This is useful anywhere reproduciblity is important (e.g. vignettes and published results).
 
 ## Lists
 
-Each list is a sub-directory under the `lists` sub-directory, holding the following files:
+Each list is a sub-directory under the `lists` sub-directory, holding the following:
 
 * `README.md` contains a free text in markdown format that describes the semantics of the list.
 
-* For each namespace, _namespace_`.tsv` contains a single column called `name` holding the named genes in
-  alphabetical order. This includes both the canonical and the alternative gene names, to make it easier to test whether
-  a gene is included in the list.
+* The `names` sub-directory contains, for each namespace, _namespace_`.tsv` with a single column called `name` holding
+  the named genes in alphabetical order. This includes both the canonical and the alternative gene names, to make it
+  easier to test whether a gene is included in the list.
 
-Lists are curated by hand, typically using ``scripts/map_list.py`` to map names between namespaces.
+* To compute the above, we begin with a set of manually curated "source of truth" files. These are TSV or CSV files
+  under the `sources` sub-directory which have at least one column containing names (of some namespace). In addition we
+  have a single `sources.yaml` file which contains a sequence of mappings with the following keys, as well as a comment
+  describing the source:
+
+  * ``data_file`` holds the name of the CSV or TSV source data file.
+
+  * ``has_header`` is a boolean specifying whether the data file has a header line (default: `true`).
+
+  * `columns` holds a mapping whose key is the column name (or 0-based index), and whose value is a name of a namespace.
+
+  The computed canonical list names are any alternatives for any of the names listed or mapped to any of the names
+  in any of the namespaces, using ``scripts/compute_list.py``.
 
 ## Namepaces
 
@@ -58,8 +80,7 @@ defines its own gene naming scheme:
 [UCSC](https://genome.ucsc.edu/).
 
 To maintain lists of genes we must deal with these gene namespaces. We do this by scraping data from many places and
-maintaining a mapping between the different gene name spaces. Note that in some namespaces, what we refer to as a "name"
-here is called the "symbol" or "marker".
+maintaining a mapping between the different gene name spaces.
 
 We use the following data model for handling gene namespaces:
 
@@ -68,8 +89,19 @@ We use the following data model for handling gene namespaces:
 
 * In each namespace, there is a set of "canonical" gene names.
 
-* It is assumed that once a name was added to a namespace, it is never removed - only renamed to some new name(s).
-  It may be that multiple old names are combined into a new one or that an old name is split into several new ones.
+* It is assumed that once a name was added to a namespace, it is never removed - only renamed to some new name(s). It
+  may be that multiple old names are combined into a new one or that an old name is split into several new ones, or
+  possibly that the name is "retired" (no longer used) - but would be kept to allow processing old data.
+
+  This sensible policy doesn't hold even for numerical namespaces like Ensembl due to "reasons". Specifically new
+  versions of the namespace simply drop "retired" identifiers making it hard to deal with old data sets. We try and map
+  such retired names to the new names, and keep them around even if they were completely removed, to make it easier for
+  looking up names from older data sets.
+
+  In cases of a true ambiguity (an old gene being renamed to a new name, and another different gene given the old name)
+  we consider the two names to be alternatives of each other and therefore any list containing one of these genes will
+  also contain the other. This isn't ideal but seems to be the best we can do given the purpose of this repository
+  (which is to maintain *initial* lists for analysis).
 
 * Each canonical name has an associated set of "alternative" (alias and/or older) names to reflect usage and/or
   changes made to the namespace over time.
@@ -81,10 +113,10 @@ sometimes several gene name(s) in one namespace are mapped to a single name in a
 Therefore, mapping a gene name between namespace (or even merely converting each gene name to its canonical name)
 requires some strategy to deal with cases where the name is split into several names, or is merged with other names.
 
-To compute all the above, we begin with an ordered set of "source of truth" files. These are TSV or CSV files under the
-`sources` sub-directory which have at least two column containing names, to establish the link between names (within the
-same namespace or across namespaces). In addition we have a single `sources.yaml` file which contains a sequence of
-mappings with the following keys, as well as a comment describing the source:
+To compute all the above, we begin with a set of "source of truth" files. These are TSV or CSV files under the `sources`
+sub-directory which have at least two column containing names, to establish the link between names (within the same
+namespace or across namespaces). In addition we have a single `sources.yaml` file which contains a sequence of mappings
+with the following keys, as well as a comment describing the source:
 
 * ``data_file`` holds the name of the CSV or TSV source data file.
 * ``has_header`` is a boolean specifying whether the data file has a header line (default: `true`).
