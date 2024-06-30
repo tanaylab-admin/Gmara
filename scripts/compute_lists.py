@@ -34,6 +34,7 @@ class NamespaceMap:
 
 class Names:
     def __init__(self, sources_dir, namespaces_dir):
+        self.namespaces_dir = namespaces_dir
         self.sources_dir = sources_dir
         self.namespaces = {}
         self.gene_names = {}
@@ -80,15 +81,19 @@ class Names:
             self.gene_names[namespace_name].remove("")
 
     def verify_names(self):
-        with open(f"{self.sources_dir}/MISSING_GENES.txt", "w") as file:
-            for namespace_name, gene_names in self.gene_names.items():
-                print(f"Verify names {namespace_name} ...")
-                namespace = self.namespaces[namespace_name]
-                for gene_name in sorted(gene_names):
-                    if gene_name not in namespace.gene_names:
-                        print(f"The gene: '{gene_name}' is missing from the namespace: {namespace_name}")
-                        print(f"The gene: '{gene_name}' is missing from the namespace: {namespace_name}", file = file)
-                gene_names &= namespace.gene_names
+        for namespace_name, gene_names in self.gene_names.items():
+            print(f"Verify names {namespace_name} ...")
+            file = None
+            namespace = self.namespaces[namespace_name]
+            for gene_name in sorted(gene_names):
+                if gene_name not in namespace.gene_names:
+                    print(f"The gene: '{gene_name}' is missing from the namespace: {namespace_name}")
+                    if file is None:
+                        file = open(f"{self.namespaces_dir}/../sources/{namespace_name}_Missing_from_Lists.txt", "a")
+                    print(f"{gene_name}", file = file)
+            gene_names &= namespace.gene_names
+            if file is not None:
+                file.close()
 
     def complete_names(self):
         print("Complete names ...")

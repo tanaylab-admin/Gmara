@@ -83,6 +83,50 @@ class Namespaces:
                         first_namespace.genes[first_gene_name].links.add((second_namespace_name, second_gene_name))
                         second_namespace.genes[second_gene_name].links.add((first_namespace_name, first_gene_name))
 
+    def collect_extra(self):
+        for namespace_name in self.namespaces:
+            self.collect_extra_namespace(namespace_name)
+            for other_namespace_name in self.namespaces:
+                if namespace_name < other_namespace_name:
+                    self.collect_extra_namespaces(namespace_name, other_namespace_name)
+
+    def collect_extra_namespace(self, namespace_name):
+        namespace = self.namespaces[namespace_name]
+        extra_path = f"{self.sources_dir}/{namespace_name}.Extra.tsv"
+        if os.path.isfile(extra_path):
+            print(f"Collect sources/{namespace_name}.Extra.tsv ...")
+            frame = pd.read_csv(
+                extra_path,
+                dtype = str,
+                keep_default_na = False,
+                header=None,
+                sep = "\t",
+            )
+            first_gene_names = frame.iloc[:, 0].values
+            second_gene_names = frame.iloc[:, 1].values
+            self.add_names(namespace_name, True, first_gene_names)
+            self.add_names(namespace_name, False, second_gene_names)
+            self.link_names(namespace_name, first_gene_names, namespace_name, second_gene_names)
+
+    def collect_extra_namespaces(self, first_namespace_name, second_namespace_name):
+        first_namespace = self.namespaces[first_namespace_name]
+        second_namespace = self.namespaces[second_namespace_name]
+        extra_path = f"{self.sources_dir}/{first_namespace_name}.{second_namespace_name}.Extra.tsv"
+        if os.path.isfile(extra_path):
+            print(f"Collect sources/{first_namespace_name}.{second_namespace_name}.Extra.tsv ...")
+            frame = pd.read_csv(
+                extra_path,
+                dtype = str,
+                keep_default_na = False,
+                header=None,
+                sep = "\t",
+            )
+            first_gene_names = frame.iloc[:, 0].values
+            second_gene_names = frame.iloc[:, 1].values
+            self.add_names(first_namespace_name, True, first_gene_names)
+            self.add_names(second_namespace_name, False, second_gene_names)
+            self.link_names(first_namespace_name, first_gene_names, second_namespace_name, second_gene_names)
+
     def complete_links(self):
         for namespace_name in self.namespaces:
             print(f"Complete links {namespace_name} ...", flush = True)
@@ -169,7 +213,7 @@ def normalize_name(name):
         return name
 
 def main():
-    assert len(sys.argv) == 2, "Usage: compute_namespaces.py genes/organism"
+    assert len(sys.argv) == 2, "Usage: compute_namespaces.py genes/species"
 
     root_dir = f"{sys.argv[1]}/namespaces"
     assert os.path.isdir(root_dir), f"not a directory: {root_dir}"
@@ -185,6 +229,7 @@ def main():
     namespaces = Namespaces(sources_dir)
     for source_spec in sources_spec:
         namespaces.collect_source(source_spec)
+    namespaces.collect_extra()
     namespaces.complete_links()
     namespaces.ensure_canonical()
 

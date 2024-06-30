@@ -8,4 +8,4 @@
 - data_file: Toronto.csv
   columns:
     Ensembl ID: Ensembl
-    HGNC symbol: HGNC
+    HGNC symbol: Symbol
