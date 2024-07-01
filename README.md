@@ -153,8 +153,7 @@ In addition to the above, the `sources` sub-directory optionally contains the fo
 
 * _namespace_`.Extra.tsv` and _namespace1_`.`_namespace2_`.Extra.tsv` contain data for missing names that we fetched
   from web APIs (using ``scripts/compute_namespaces.py``). Accessing web APIs is more fragile than parsing the CSV/TSV
-  files, so this may fail and require updating the code if/when these API change (in some cases we actually have to
-  scrape the data from HTML files which is even more fragile).
+  files, so this may fail and require updating the code if/when these APIs change.
 
 * _namespace_`.Ignored.tsv` contains missing names that we have looked up in the web APIs and couldn't find any data
   for. These names are *not* included in the namespace. Ideally, there shouldn't be any such names; they are typically

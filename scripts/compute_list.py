@@ -70,12 +70,8 @@ class Names:
                 gene_names = frame.iloc[:, column].values
             else:
                 gene_names = frame.loc[:, column].values
-            self.add_names(namespace_name, gene_names)
-
-    def add_names(self, namespace_name, gene_names):
-        self.gene_names[namespace_name].update(gene_names)
-        if "" in self.gene_names[namespace_name]:
-            self.gene_names[namespace_name].remove("")
+            gene_names = set([normalize_name(namespace_name, gene_name) for gene_name in gene_names if gene_name != ""])
+            self.gene_names[namespace_name].update(gene_names)
 
     def verify_names(self):
         for namespace_name, gene_names in self.gene_names.items():
@@ -143,6 +139,15 @@ class Names:
                 print("name", file=file)
                 for gene_name in sorted(namespace_gene_names):
                     print(gene_name, file=file)
+
+def normalize_name(namespace_name, name):
+    if namespace_name == "UCSC":
+        return name
+    parts = name.split(".")
+    if len(parts) == 2:
+        return parts[0]
+    else:
+        return name
 
 def main():
     assert len(sys.argv) == 3, "Usage: compute_list.py species list"

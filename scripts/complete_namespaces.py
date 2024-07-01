@@ -33,7 +33,7 @@ def complete_namespace(namespace_name, sources_dir):
         ignored_names = set()
 
     for gene_name in sorted(missing_names):
-        gene_name = gene_name[:-1]
+        gene_name = normalize_name(namespace_name, gene_name[:-1])
         if gene_name not in ignored_names \
                 and (complete_function is None or not complete_function(sources_dir, gene_name)):
             ignored_names.add(gene_name)
@@ -52,11 +52,11 @@ def complete_Ensembl(sources_dir, ensembl_id):
 
     active_ids = set()
     for datum in data:
-        stable_id = datum.get("stable_id", ensembl_id)
+        stable_id = normalize_name("Ensembl", datum.get("stable_id", ensembl_id))
         if stable_id != ensembl_id:
             active_ids.add(stable_id)
         for gene in datum.get("genes", []):
-            stable_id = gene.get("stable_id", ensembl_id)
+            stable_id = normalize_name("Ensembl", gene.get("stable_id", ensembl_id))
             if stable_id != ensembl_id:
                 active_ids.add(stable_id)
 
@@ -67,6 +67,51 @@ def complete_Ensembl(sources_dir, ensembl_id):
     print(f"Found {len(active_ids)} mappings for the missing Ensembl {ensembl_id}")
     return True
 
+def complete_Symbol(sources_dir, symbol):
+    url = f"http://api.genome.ucsc.edu/search?search={symbol}&genome=hg38"
+    time.sleep(0.01)
+    page = requests.get(url)
+    data = json.loads(page.content)
+
+    symbols = set()
+    ensembl_ids = set()
+
+    for positionMatch in data["positionMatches"]:
+        for match in positionMatch["matches"]:
+            position = match["position"]
+            chromosome, locations = position.split(":")
+            start, end = locations.split("-")
+            chromosome = chromosome[3:]
+            time.sleep(0.01)
+            match_url = f"https://rest.ensembl.org/overlap/region/human/{chromosome}:{start}:{end}?feature=gene;content-type=application/json"
+            match_page = requests.get(match_url)
+            match_data = json.loads(match_page.content)
+            for match_datum in match_data:
+                if "external_name" in match_datum:
+                    symbols.add(normalize_name("Symbol", match_datum["external_name"]))
+                if "gene_id" in match_datum:
+                    ensembl_ids.add(normalize_name("Ensembl", match_datum["gene_id"]))
+                if "canonical_transcript" in match_datum:
+                    ensembl_ids.add(normalize_name("Ensembl", match_datum["canonical_transcript"]))
+
+    if len(symbols) > 0:
+        print(f"Found {len(symbols)} Symbol mappings for the missing Symbol {symbol}")
+        store_extra(sources_dir, "Symbol.Extra.tsv", symbol, symbols)
+
+    if len(ensembl_ids) > 0:
+        print(f"Found {len(ensembl_ids)} Ensembl mappings for the missing Symbol {symbol}")
+        store_extra(sources_dir, "Symbol.Ensembl.Extra.tsv", symbol, ensembl_ids)
+
+    return len(symbols) + len(ensembl_ids) > 0
+
+def normalize_name(namespace_name, name):
+    if namespace_name == "UCSC":
+        return name
+    parts = name.split(".")
+    if len(parts) == 2:
+        return parts[0]
+    else:
+        return name
 
 def store_extra(sources_dir, extra_path, gene_name, other_gene_names):
     with open(f"{sources_dir}/{extra_path}", "a+") as file:

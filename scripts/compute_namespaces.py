@@ -50,16 +50,16 @@ class Namespaces:
             first_namespace_name, first_is_alternative, first_gene_names = columns[first_column]
             print(f"Collect sources/{sources_spec["data_file"]} / {first_column} -> {first_namespace_name} ...", flush = True)
             for row in range(frame.shape[0]):
-                self.add_names(first_namespace_name, first_is_alternative, split_names(first_gene_names[row]))
+                self.add_names(first_namespace_name, first_is_alternative, split_names(first_namespace_name, first_gene_names[row]))
             for second_column in range(first_column):
                 second_namespace_name, second_is_alternative, second_gene_names = columns[second_column]
                 print(f"Collect sources/{sources_spec["data_file"]} / {first_column} -> {first_namespace_name} / {second_column} -> {second_namespace_name} ...", flush = True)
                 for row in range(frame.shape[0]):
                     self.link_names(
                         first_namespace_name,
-                        split_names(first_gene_names[row]),
+                        split_names(first_namespace_name, first_gene_names[row]),
                         second_namespace_name,
-                        split_names(second_gene_names[row]),
+                        split_names(second_namespace_name, second_gene_names[row]),
                     )
 
     def add_names(self, namespace_name, is_alternative, gene_names):
@@ -87,8 +87,7 @@ class Namespaces:
         for namespace_name in self.namespaces:
             self.collect_extra_namespace(namespace_name)
             for other_namespace_name in self.namespaces:
-                if namespace_name < other_namespace_name:
-                    self.collect_extra_namespaces(namespace_name, other_namespace_name)
+                self.collect_extra_namespaces(namespace_name, other_namespace_name)
 
     def collect_extra_namespace(self, namespace_name):
         namespace = self.namespaces[namespace_name]
@@ -200,11 +199,11 @@ class Namespaces:
                         if not link_gene.is_alternative:
                             print(f"{gene_name1}\t{link_gene_name}", file=file)
 
-def split_names(names):
-    return [normalize_name(name) for name in re.split(r"[| ,;\t]", names)]
+def split_names(namespace_name, names):
+    return [normalize_name(namespace_name, name) for name in re.split(r"[| ,;\t]", names)]
 
-def normalize_name(name):
-    if not name.startswith("ENS"):
+def normalize_name(namespace_name, name):
+    if namespace_name == "UCSC":
         return name
     parts = name.split(".")
     if len(parts) == 2:

@@ -8,17 +8,6 @@ all: namespaces lists
 clean:
 	rm -rf `find . -name 'log.txt'`
 
-clean_extra:
-	rm -rf genes/*/namespaces/sources/*.Extra.tsv
-	for IGNORED in genes/*/namespaces/sources/*.Ignored.tsv ; \
-	do \
-	    MISSING=`echo $$IGNORED | sed 's/Ignored/Missing/'` ; \
-	    if [ -f $$IGNORED ] ; then \
-	        cat $$IGNORED >> $$MISSING ; \
-	        rm $$IGNORED ; \
-	    fi ; \
-	done
-
 
 define SPECIES_RULES
 
