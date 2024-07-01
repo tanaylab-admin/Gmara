@@ -16,7 +16,17 @@ sequence we use in analysis". Likewise, what we call a gene "name" is "whatever 
 example, we include utranscript and protein IDs as "gene names". We only consider the gene "identifier" or "symbol" or
 "marker" rather than the full human-readable gene name (e.g., "SOX4" rather than "SRY-box transcription factor 4").
 
-Feedback and contribution of new lists or list modifications are welcome!
+## Status
+
+This repository is still in its "alpha" phase - everything may change without notice. This will be updated to "beta"
+when the structure stabilizes and we have a few useful lists in place for human and mouse. It will be updated to
+"production" when the structure will be expected never to change again without providing some backward compatibility
+features.
+
+The repository content is expected to always keep evolving due to updates to the relevant gene namespaces (which are a
+constantly moving target), and by the addition of new species and/or gene lists, or updates to the existing lists.
+
+Feedback and contributions are welcome!
 
 ## Structure
 
@@ -159,3 +169,10 @@ To represent the result, in the `names` sub-directory we keep the following file
   the mapping from _namespace1_ names to _namespace2_ names, in alphabetical order. The `to` names given for
   _namespace2_ are always canonical. Note that the same _namespace1_ name may appear multiple times to allow for
   one-to-many mappings.
+
+## Updates
+
+Updating this repository is done by adding new species, namespaces (sources) and lists (sources). Everything is rebuilt
+by invoking `make` at the top-level directory. If any of the added data refers to missing gene names, you will have to
+re-run `make` again to update the namespaces based on the recomputed `Extra` files. To be certain just re-run `make`
+until it says `Nothing to be done`.
