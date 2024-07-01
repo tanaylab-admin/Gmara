@@ -213,16 +213,11 @@ def normalize_name(name):
         return name
 
 def main():
-    assert len(sys.argv) == 2, "Usage: compute_namespaces.py genes/species"
+    assert len(sys.argv) == 2, "Usage: compute_namespaces.py species"
+    species = sys.argv[1]
 
-    root_dir = f"{sys.argv[1]}/namespaces"
-    assert os.path.isdir(root_dir), f"not a directory: {root_dir}"
-
-    sources_dir = f"{root_dir}/sources"
-    assert os.path.isdir(sources_dir), f"not a directory: {sources_dir}"
-
-    sources_yaml = f"{root_dir}/sources/sources.yaml"
-    assert os.path.isfile(sources_yaml), f"not a file: {sources_yaml}"
+    sources_dir = f"genes/{species}/namespaces/sources"
+    sources_yaml = f"genes/{species}/namespaces/sources/sources.yaml"
     with open(sources_yaml) as file:
         sources_spec = yaml.safe_load(file)
 
@@ -233,7 +228,7 @@ def main():
     namespaces.complete_links()
     namespaces.ensure_canonical()
 
-    names_dir = f"{root_dir}/names"
+    names_dir = f"genes/{species}/namespaces/names"
     namespaces.write(names_dir)
 
 if __name__ == "__main__":

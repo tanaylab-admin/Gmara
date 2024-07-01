@@ -15,7 +15,7 @@
 
 # Via: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/
 # Downloaded URL: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/wgEncodeGencodeAttrsV46.txt.gz
-- data_file: UCSC_Ensembl.tsv
+- data_file: UCSC.Ensembl.tsv
   has_header: false
   columns:
     0: { namespace: RefSeq }
@@ -24,7 +24,7 @@
 
 # Via: https://genome.ucsc.edu/index.html
 # CLI: mysql --user=genome --host=genome-mysql.cse.ucsc.edu --disable-auto-rehash -e "SELECT name,alignID,mRNA,geneSymbol,refseq,protAcc FROM hg38.knownGene INNER JOIN hg38.kgXref ON knownGene.name = kgXref.kgID"
-- data_file: UCSC_RefSeq.tsv
+- data_file: UCSC.RefSeq.tsv
   columns:
     name: { namespace: Ensembl }
     alignID: { namespace: UCSC }
@@ -46,21 +46,21 @@
     Transcript stable ID: { namespace: Ensembl, is_alternative = true }
     Protein stable ID: { namespace: Ensembl, is_alternative = true }
 
-- data_file: Ensembl_HGNC.tsv
+- data_file: Ensembl.HGNC.tsv
   columns:
     Gene stable ID: { namespace: Ensembl }
     Transcript stable ID: { namespace: Ensembl, is_alternative = true }
     Protein stable ID: { namespace: Ensembl, is_alternative = true }
     HGNC symbol: { namespace: Symbol }
 
-- data_file: Ensembl_UCSC.tsv
+- data_file: Ensembl.UCSC.tsv
   columns:
     Gene stable ID: { namespace: Ensembl }
     Transcript stable ID: { namespace: Ensembl, is_alternative = true }
     Protein stable ID: { namespace: Ensembl, is_alternative = true }
     UCSC Stable ID: { namespace: UCSC }
 
-- data_file: Ensembl_RefSeq_mRNA.tsv
+- data_file: Ensembl.RefSeq_mRNA.tsv
   columns:
     Gene stable ID: { namespace: Ensembl }
     Transcript stable ID: { namespace: Ensembl, is_alternative = true }
@@ -68,7 +68,7 @@
     RefSeq mRNA ID: { namespace: RefSeq }
     RefSeq mRNA predicted ID: { namespace: RefSeq, is_alternative = true }
 
-- data_file: Ensembl_RefSeq_ncRNA.tsv
+- data_file: Ensembl.RefSeq_ncRNA.tsv
   columns:
     Gene stable ID: { namespace: Ensembl }
     Transcript stable ID: { namespace: Ensembl, is_alternative = true }
@@ -76,7 +76,7 @@
     RefSeq ncRNA ID: { namespace: RefSeq }
     RefSeq ncRNA predicted ID: { namespace: RefSeq, is_alternative = true }
 
-- data_file: Ensembl_RefSeq_peptide.tsv
+- data_file: Ensembl.RefSeq_peptide.tsv
   columns:
     Gene stable ID: { namespace: Ensembl }
     Transcript stable ID: { namespace: Ensembl, is_alternative = true }
